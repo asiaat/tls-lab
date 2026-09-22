@@ -1,0 +1,36 @@
+services:
+  web:
+    build: ./web
+    container_name: lab_web
+    networks:
+      lab_net:
+        ipv4_address: 172.28.0.10
+    ports:
+      - "8080:80"     # HTTP (insecure) - also reachable from host browser
+      - "8443:443"    # HTTPS (self-signed cert)
+
+  victim:
+    build: ./web           # reuse the same base image, but just run a shell
+    container_name: lab_victim
+    entrypoint: sleep infinity
+    networks:
+      lab_net:
+        ipv4_address: 172.28.0.20
+
+  attacker:
+    build: ./attacker
+    container_name: lab_attacker
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      lab_net:
+        ipv4_address: 172.28.0.30
+    command: sleep infinity
+
+networks:
+  lab_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
