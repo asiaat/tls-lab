@@ -1,7 +1,20 @@
 FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openssl curl iproute2 traceroute \
+        # Protsessihaldus (ps, top)
+        procps \
+        # Võrgudiagnostika (ss, ip, ping, traceroute)
+        iproute2 \
+        iputils-ping \
+        traceroute \
+        # Testkliendi tööriistad (curl, wget, nc)
+        curl \
+        wget \
+        netcat-openbsd \
+        dnsutils \
+        # Sertifikaatide ja krüpto tööriistad
+        openssl \
+        ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
